@@ -719,7 +719,12 @@ sudo systemctl restart apache2</code></pre>
           <div class="code-header"><span class="code-label">bash</span></div>
           <pre><code class="language-bash">sudo cp /usr/share/modsecurity-crs/crs-setup.conf.example \
 /etc/modsecurity/crs-setup.conf</code></pre>
-          <p class="optional"><strong>OR</strong></p>
+        </div>
+        <p class="optional" style="padding-left: 0; margin: 0.5rem 0; text-align: center">
+          <strong>OR</strong>
+        </p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-label">bash</span></div>
           <pre><code class="language-bash">sudo cp /usr/share/modsecurity-crs/crs-setup.conf.example \
 /etc/modsecurity/crs-setup.conf
 </code></pre>
@@ -1448,22 +1453,45 @@ CONFIG SET maxmemory-policy allkeys-lru</code></pre>
             button.ariaLabel = "Copy code";
 
             button.addEventListener("click", async () => {
-              try {
-                await navigator.clipboard.writeText(code.innerText);
+              const textToCopy = code.innerText;
+              let success = false;
 
+              try {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                  await navigator.clipboard.writeText(textToCopy);
+                  success = true;
+                } else {
+                  throw new Error("Clipboard API unavailable");
+                }
+              } catch (err) {
+                // Fallback for non-secure contexts or older browsers
+                try {
+                  const textArea = document.createElement("textarea");
+                  textArea.value = textToCopy;
+                  textArea.style.position = "fixed"; // Avoid scrolling to bottom
+                  textArea.style.left = "-9999px";
+                  document.body.appendChild(textArea);
+                  textArea.focus();
+                  textArea.select();
+                  success = document.execCommand("copy");
+                  document.body.removeChild(textArea);
+                } catch (fallbackErr) {
+                  console.error("Fallback copy failed:", fallbackErr);
+                }
+              }
+
+              if (success) {
                 // Success feedback
                 button.textContent = "Copied!";
                 button.classList.add("success");
-                button.style.padding = "0.25rem 0.75rem"; // Adjust padding for text
+                button.style.padding = "0.25rem 0.75rem";
 
                 setTimeout(() => {
                   button.innerHTML = copyIcon;
                   button.classList.remove("success");
-                  button.style.padding = "0.5rem"; // Revert padding for icon
+                  button.style.padding = "0.5rem";
                 }, 2000);
-              } catch (err) {
-                console.error("Failed to copy:", err);
-
+              } else {
                 // Error feedback
                 button.textContent = "Error";
                 button.classList.add("error");
