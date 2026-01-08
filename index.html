@@ -655,7 +655,8 @@ sudo ufw default allow outgoing</code></pre>
         <div class="code-block">
           <div class="code-header"><span class="code-label">bash</span></div>
           <pre><code class="language-bash">sudo ufw allow 80/tcp
-sudo ufw allow 443/tcp</code></pre>
+sudo ufw allow 443/tcp
+sudo ufw allow 8080/tcp</code></pre>
         </div>
         <h3 id="enable-ufw">Enable UFW</h3>
         <div class="code-block">
@@ -790,6 +791,8 @@ sudo systemctl restart apache2</code></pre>
           <div class="code-header"><span class="code-label">bash</span></div>
           <pre><code class="language-bash">sudo a2enmod proxy
 sudo a2enmod proxy_http
+sudo a2enmod proxy_html
+sudo a2enmod ssl
 sudo systemctl restart apache2</code></pre>
         </div>
         <div class="code-block">
