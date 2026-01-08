@@ -750,35 +750,51 @@ sudo systemctl restart apache2</code></pre>
         <p><strong>Angular SPA:</strong></p>
         <div class="code-block">
           <div class="code-header"><span class="code-label">bash</span></div>
-          <pre><code class="language-bash">sudo nano /etc/apache2/sites-available/app1.conf</code></pre>
+          <pre><code class="language-bash">sudo nano /etc/apache2/sites-available/new-site.com.conf</code></pre>
         </div>
         <div class="info-box">
           <div class="code-block">
             <div class="code-header"><span class="code-label">apache</span></div>
             <pre><code class="language-apache">&lt;VirtualHost *:80>
-    ServerName app1.example.com
-    DocumentRoot /var/www/angular-app1
+    ServerName new-site.com
+    ServerAlias www.new-site.com
+    DocumentRoot /var/www/new-site.com
 
-    &lt;Directory /var/www/angular-app1>
+    &lt;Directory /var/www/new-site.com>
+        Options -Indexes +FollowSymLinks
         AllowOverride All
         Require all granted
+
+        # This part is CRITICAL for Angular routing
+        RewriteEngine On
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteCond %{REQUEST_FILENAME} !-d
+        RewriteRule ^ index.html [L]
     &lt;/Directory>
 
-    RewriteEngine On
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^ index.html [L]
+    ErrorLog ${APACHE_LOG_DIR}/new-site-error.log
+    CustomLog ${APACHE_LOG_DIR}/new-site-access.log combined
 &lt;/VirtualHost></code></pre>
           </div>
         </div>
         <p>enable:</p>
         <div class="code-block">
           <div class="code-header"><span class="code-label">bash</span></div>
-          <pre><code class="language-bash">sudo a2ensite app1</code></pre>
+          <pre><code class="language-bash">sudo a2enmod rewrite
+sudo a2ensite new-site.com.conf
+sudo apache2ctl configtest  # Check for errors
+sudo systemctl restart apache2</code></pre>
         </div>
         <p><strong>Node.js API (Reverse Proxy):</strong></p>
         <div class="code-block">
           <div class="code-header"><span class="code-label">bash</span></div>
-          <pre><code class="language-bash">sudo nano /etc/apache2/sites-available/api1.conf</code></pre>
+          <pre><code class="language-bash">sudo a2enmod proxy
+sudo a2enmod proxy_http
+sudo systemctl restart apache2</code></pre>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><span class="code-label">bash</span></div>
+          <pre><code class="language-bash">sudo nano /etc/apache2/sites-available/api.example.com.conf</code></pre>
         </div>
         <div class="info-box">
           <div class="code-block">
@@ -791,14 +807,17 @@ sudo systemctl restart apache2</code></pre>
     ProxyPassReverse / http://127.0.0.1:3000/
 
     RequestHeader set X-Forwarded-Proto "http"
+    ErrorLog ${APACHE_LOG_DIR}/api-error.log
+    CustomLog ${APACHE_LOG_DIR}/api-access.log combined
 &lt;/VirtualHost></code></pre>
           </div>
         </div>
         <p>enable:</p>
         <div class="code-block">
           <div class="code-header"><span class="code-label">bash</span></div>
-          <pre><code class="language-bash">sudo a2ensite api1
-sudo systemctl reload apache2</code></pre>
+          <pre><code class="language-bash">sudo a2ensite api.example.com.conf
+sudo apache2ctl configtest
+sudo systemctl restart apache2</code></pre>
         </div>
         <h3 id="enable-https-apache">Enable HTTPS with Certbot</h3>
         <div class="code-block">
