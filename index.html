@@ -1007,12 +1007,18 @@ sudo certbot renew --dry-run
         </div>
         <h2 id="install-mongodb">Install MongoDB</h2>
         <p><strong>Import MongoDB GPG key:</strong></p>
+        <div class="info-box">
+          <p>This is for MongoDB V7.0, change accordingly for other versions</p>
+        </div>
         <div class="code-block">
           <div class="code-header"><span class="code-label">bash</span></div>
           <pre><code class="language-bash">curl -fsSL https://pgp.mongodb.com/server-7.0.asc | \
 sudo gpg --dearmor -o /usr/share/keyrings/mongodb-server.gpg</code></pre>
         </div>
         <p><strong>Add MongoDB repository:</strong></p>
+        <div class="info-box">
+          <p>This is for MongoDB V7.0, change accordingly for other versions</p>
+        </div>
         <div class="code-block">
           <div class="code-header"><span class="code-label">bash</span></div>
           <pre><code class="language-bash">echo "deb [signed-by=/usr/share/keyrings/mongodb-server.gpg] \
@@ -1174,7 +1180,7 @@ failregex = .*authentication failed.*client: &lt;HOST&gt;.* </code></pre>
           <hr />
           <pre><code class="language-bash">[mongodb]
 enabled = true
-port = 27018
+port = 42058
 filter = mongodb
 logpath = /var/log/mongodb/mongod.log
 maxretry = 15</code></pre>
@@ -1187,6 +1193,9 @@ maxretry = 15</code></pre>
 
         <h2 id="install-nodejs">Install NodeJS</h2>
         <h3 id="nodejs-add-repo">Add NodeSource repo</h3>
+        <div class="info-box">
+          <p>This is for NodeJs v20.x, change accordingly for other versions</p>
+        </div>
         <div class="code-block">
           <div class="code-header"><span class="code-label">bash</span></div>
           <pre><code class="language-bash">curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -</code></pre>
@@ -1254,6 +1263,12 @@ sudo docker compose --version</code></pre>
         </div>
 
         <h2 id="install-redis-docker">Install Redis on Docker</h2>
+        <div class="info-box">
+          <p>
+            In following examples, the default port (6973) for redis have been changed to a custom
+            port
+          </p>
+        </div>
         <h3 id="redis-basic">Basic</h3>
         <div class="code-block">
           <div class="code-header"><span class="code-label">bash</span></div>
